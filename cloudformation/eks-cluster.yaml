@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "EKS Cluster"
+Parameters:
+  ClusterName:
+    Type: String
+    Default: "eks-training"
+  IamStack:
+    Type: String
+    Default: "eks-iam"
+    Description: Name of upstream IAM stack
+  VpcStack:
+    Type: String
+    Default: "eks-vpc"
+    Description: Name of upstream VPC stack
+  EksVersion:
+    Type: String
+    Default: "1.15"
+
+Resources:
+  EKSCluster:
+    Type: AWS::EKS::Cluster
+    Properties:
+      Name: !Ref ClusterName
+      RoleArn:
+        Fn::ImportValue: !Sub "${IamStack}-RoleArn"
+      Version: "1.15"
+      ResourcesVpcConfig:
+        SecurityGroupIds:
+          - Fn::ImportValue: !Sub "${VpcStack}-control-plane-sg"
+        SubnetIds:
+          - Fn::ImportValue: !Sub "${VpcStack}-public-subnet-id-01"
+          - Fn::ImportValue: !Sub "${VpcStack}-public-subnet-id-02"
+          - Fn::ImportValue: !Sub "${VpcStack}-private-subnet-id-01"
+          - Fn::ImportValue: !Sub "${VpcStack}-private-subnet-id-02"
+      #EncryptionConfig: TODO
+
+Outputs:
+  EksClusterArn:
+    Value: !GetAtt EKSCluster.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-EksClusterArn"
+  EksClusterName:
+    Value: !Ref EKSCluster
+    Export:
+      Name: !Sub "${AWS::StackName}-EksClusterName"
+
+
+
+
+
