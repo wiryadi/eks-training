@@ -43,8 +43,3 @@ Outputs:
     Value: !Ref EKSCluster
     Export:
       Name: !Sub "${AWS::StackName}-EksClusterName"
-
-
-
-
-
