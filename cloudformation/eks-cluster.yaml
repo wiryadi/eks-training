@@ -14,7 +14,7 @@ Parameters:
     Description: Name of upstream VPC stack
   EksVersion:
     Type: String
-    Default: "1.15"
+    Default: "1.16"
 
 Resources:
   EKSCluster:
