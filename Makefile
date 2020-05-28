@@ -16,7 +16,7 @@ CLUSTER_PARAMS := 'ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME}'
 NODE_PARAMS := 'ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} ParameterKey=NodeImageId,ParameterValue=${AMI} ParameterKey=KeyName,ParameterValue=${PEM_KEY_NAME}'
 
 
-.PHONY: verify create_all create_vpc create_iam create_cluster create_kube_config create_keypair\
+.PHONY: verify create_all create_vpc create_iam create_cluster create_kube_config create_keypair \
 delete_all delete_vpc delete_iam delete_cluster delete_keypair
 
 verify:
@@ -34,7 +34,7 @@ endif
 setup:
 	mkdir -p temp && mkdir -p output
 
-create_all: create_cluster create_nodes create_kube_config
+create_all: create_cluster create_nodes
 
 create_cluster: create_iam create_vpc
 	bash/apply-cfn.sh eks-cluster cloudformation/eks-cluster.yaml ${CLUSTER_PARAMS}
@@ -42,7 +42,7 @@ create_cluster: create_iam create_vpc
 create_kube_config: setup create_cluster clean
 	bash/create-kubeconfig.sh ${CLUSTER_NAME} ${KUBECONFIG_FILE}
 
-create_nodes: setup clean create_keypair create_cluster
+create_nodes: setup clean create_keypair create_cluster create_kube_config
 	bash/apply-cfn.sh eks-node-group cloudformation/eks-node-group.yaml ${NODE_PARAMS} CAPABILITY_IAM
 	bash/onboard-node-group.sh eks-node-group ${KUBECONFIG_FILE}
 
@@ -56,7 +56,7 @@ create_vpc:
 	bash/apply-cfn.sh eks-vpc cloudformation/eks-vpc.yaml
 
 
-delete_all: delete_vpc delete_iam clean
+delete_all: delete_vpc delete_iam delete_keypair clean
 
 delete_vpc: delete_cluster clean
 	bash/delete-cfn.sh eks-vpc
@@ -69,6 +69,10 @@ delete_cluster: delete_nodes
 
 delete_nodes: clean
 	bash/delete-cfn.sh eks-node-group
+
+delete_keypair:
+	bash/delete-keypair.sh ${PEM_KEY_NAME}
+
 
 clean:
 	rm -rf temp/*
