@@ -2,8 +2,8 @@
 EKS Training Cluster, with CI/CD
 
 Pre-requisite:
-awscli
-gnu make
+  * awscli
+  * gnu make
 
 Assume you have configured you AWS default profile or setup your credential with environment variables e.g.,
 ```bash
