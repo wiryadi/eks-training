@@ -42,7 +42,8 @@ create_cluster: create_iam create_vpc
 create_kube_config: setup create_cluster clean
 	bash/create-kubeconfig.sh ${CLUSTER_NAME} ${KUBECONFIG_FILE}
 
-create_nodes: setup clean create_keypair create_cluster create_kube_config
+#create_nodes: setup clean create_keypair create_cluster create_kube_config
+create_nodes:
 	bash/apply-cfn.sh eks-node-group cloudformation/eks-node-group.yaml ${NODE_PARAMS} CAPABILITY_IAM
 	bash/onboard-node-group.sh eks-node-group ${KUBECONFIG_FILE}
 
