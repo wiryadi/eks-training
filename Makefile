@@ -34,7 +34,7 @@ endif
 setup:
 	mkdir -p temp && mkdir -p output
 
-create_all: create_cluster create_nodes
+create_all: create_cluster create_nodes create_storage_class
 
 create_cluster: create_iam create_vpc
 	bash/apply-cfn.sh eks-cluster cloudformation/eks-cluster.yaml ${CLUSTER_PARAMS}
@@ -55,6 +55,8 @@ create_iam:
 create_vpc:
 	bash/apply-cfn.sh eks-vpc cloudformation/eks-vpc.yaml
 
+create_storage_class: create_kube_config
+	bash/create-storage-class.sh ${KUBECONFIG_FILE}
 
 delete_all: delete_vpc delete_iam delete_keypair clean
 

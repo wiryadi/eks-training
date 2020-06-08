@@ -11,5 +11,5 @@ then
   aws cloudformation wait stack-delete-complete --stack-name $1
   echo $1 was successfully deleted
 else
-  echo unable to find $1. exiting.
+  echo Unable to find $1. Skipping.
 fi
