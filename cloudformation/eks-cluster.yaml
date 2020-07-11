@@ -23,7 +23,7 @@ Resources:
       Name: !Ref ClusterName
       RoleArn:
         Fn::ImportValue: !Sub "${IamStack}-RoleArn"
-      Version: "1.15"
+      Version: !Ref EksVersion
       ResourcesVpcConfig:
         SecurityGroupIds:
           - Fn::ImportValue: !Sub "${VpcStack}-control-plane-sg"
