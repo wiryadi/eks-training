@@ -4,7 +4,7 @@
 # $1: kubeconfig
 
 echo Creating GP2 EBS Storage Class
-KUBECONFIG=$1 kubectl apply -f temp/aws-auth-cm.yaml
+KUBECONFIG=$1 kubectl create -f k8s-manifest/gp2-storage-class.yaml
 RESULT_CODE=$?
 
 if [[ RESULT_CODE == 0 ]]; then
